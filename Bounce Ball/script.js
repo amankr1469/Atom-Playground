@@ -7,12 +7,16 @@ const canvas_height = window.innerHeight;
 canvas.width = canvas_width;
 canvas.height = canvas_height;
 
-const ctx = canvas.getContext('2d'); // 2d rendering context
+const ctx = canvas.getContext('2d');
 
 class Particle {
     constructor() {
         this.x = Math.floor(Math.random() * canvas_width);
         this.y = Math.floor(Math.random() * canvas_height);
+        this.vx = 0;
+        this.vy = 0;
+        this.acx = Math.random() > 0.5 ? 0.02 : -0.02;
+        this.acy = Math.random() > 0.5 ? 0.02 : -0.02;
         this.color = this.getRandomColor();
     }
 
@@ -31,35 +35,33 @@ class Particle {
     }
 
     update() {
-        this.x += Math.random() * 2 - 1;
-        this.y += Math.random() * 2 - 1;
+        this.vx += this.acx; 
+        this.vy += this.acy;
+        this.x += this.vx;
+        this.y += this.vy;    
+
+        if(this.x >= canvas_width || this.x <= 0){
+            this.vx = -this.vx;
+        }
+        if(this.y >= canvas_width || this.y <= 0){
+            this.vy = -this.vy;
+        }
     }
 }
 
 const particle = [];
 
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 100; i++) {
     particle.push(new Particle());
 }
 
 function animation() {
+    ctx.clearRect(0, 0, canvas_width, canvas_height);
     for(let i = 0; i < particle.length; i++) {
         particle[i].draw();
         particle[i].update();
     }
     requestAnimationFrame(animation);
-    // requestAnimationFrame is a method that tells the browser that you wish to perform an animation and requests that the browser calls a specified function to update an animation before the next repaint.
-    //It is preferred over the use of setInterval() or setTimeout() because it is more efficient and provides a smoother animation.
 }
 
 animation();
-
-// let cursor_loc = {
-//     x: 0,
-//     y: 0,
-// };
-
-// window.onmousemove = (e) => {
-//     cursor_loc.x = e.clientX; // clientX is the x-coordinate of the mouse pointer, relative to the left edge of the content area.
-//     cursor_loc.y = e.clientY; // clientY is the y-coordinate of the mouse pointer, relative to the top edge of the content area.
-// }
