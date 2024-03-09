@@ -10,32 +10,42 @@ canvas.height = canvas_height;
 const ctx = canvas.getContext('2d'); // 2d rendering context
 
 class Particle {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
+    constructor() {
+        this.x = Math.floor(Math.random() * canvas_width);
+        this.y = Math.floor(Math.random() * canvas_height);
+        this.color = this.getRandomColor();
     }
 
+    getRandomColor() {
+        let r = Math.floor(Math.random() * 255) + 1;
+        let g = Math.floor(Math.random() * 255) + 1;
+        let b = Math.floor(Math.random() * 255) + 1;
+        return `rgb(${r}, ${g}, ${b})`;
+    }
     draw() {
+        ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 10, Math.PI * 2);
+        ctx.arc(this.x, this.y, 10, 0 ,2 * Math.PI);
         ctx.fill();
         ctx.closePath();
     }
 
     update() {
-        
+        this.x += Math.random() * 2 - 1;
+        this.y += Math.random() * 2 - 1;
     }
 }
 
 const particle = [];
 
-for (let i = 0; i < 100; i++) {
-    particle.push(new Particle(Math.random() * 500, Math.random() * 500));
+for (let i = 0; i < 1000; i++) {
+    particle.push(new Particle());
 }
 
 function animation() {
     for(let i = 0; i < particle.length; i++) {
         particle[i].draw();
+        particle[i].update();
     }
     requestAnimationFrame(animation);
     // requestAnimationFrame is a method that tells the browser that you wish to perform an animation and requests that the browser calls a specified function to update an animation before the next repaint.
